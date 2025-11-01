@@ -8,7 +8,7 @@ function rand() {
 }
 
 function init() {
-  horse.style.fontSize = Size + "px";
+  horse.style.fontSize = `${Size}px`;
   x = rand() * (document.body.clientWidth - Size);
   y = rand() * (document.body.clientHeight - Size);
   dir = rand() * DirectionCount | 0;
@@ -36,7 +36,7 @@ function update(time) {
     dir |= 2;
     needColorUpdate = true;
   } else if (newX > document.body.clientWidth - Size + MaxOffset) {
-    newX = document.body.clientWidth - Size + MaxOffset
+    newX = document.body.clientWidth - Size + MaxOffset;
     dir &= 1;
     needColorUpdate = true;
   }
@@ -66,7 +66,7 @@ function render() {
   }
 
   if (needFrameUpdate) {
-    horse.style.backgroundPosition = `${-frame}em ${-dir}em`
+    horse.style.backgroundPosition = `${-frame}em ${-dir}em`;
     needFrameUpdate = false;
   }
 }
