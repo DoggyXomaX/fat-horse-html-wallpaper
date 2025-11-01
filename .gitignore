@@ -1,0 +1,11 @@
+# Mac
+.DS_Store
+
+# Black hole
+node_modules
+
+# IDE
+.vscode
+.vs
+.zed
+.idea
