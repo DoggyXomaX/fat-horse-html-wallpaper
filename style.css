@@ -7,4 +7,5 @@ body { background-color: black; overflow: hidden; }
   height: 1em;
   background-image: url(horses.webp);
   background-size: 6em 4em;
+  image-rendering: pixelated;
 }
