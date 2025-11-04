@@ -16,9 +16,9 @@ function init() {
   y = rand() * (document.body.clientHeight - Size);
   dir = rand() * DirectionCount | 0;
 
-  setInterval(updateFrame, 1000 / AnimationFPS);
+  updateFrame();
   updateStay();
-  requestAnimationFrame(update);
+  update();
 }
 
 function updateStay() {
@@ -29,9 +29,10 @@ function updateStay() {
 function updateFrame() {
   frame = (frame + 1) % FrameCount;
   needFrameUpdate = true;
+  setTimeout(updateFrame, 1000 / AnimationFPS);
 }
 
-function update(time) {
+function update(time = 0) {
   requestAnimationFrame(update);
 
   const deltaTime = (time - prevTime) / 1000;
