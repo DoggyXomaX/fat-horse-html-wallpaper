@@ -1,5 +1,8 @@
-const Size = 300, Speed = 300, MaxOffset = 10, FrameCount = 6, DirectionCount = 4, AnimationFPS = 32;
-let x = 0, y = 0, dir = 0, frame = 0, prevTime = 0, needFrameUpdate = true, needColorUpdate = true;
+const Size = 300, Speed = 300, MaxOffset = 10, MinDelay = 1000, MaxDelay = 10000, FrameCount = 6, DirectionCount = 4, AnimationFPS = 32;
+let x = 0, y = 0, dir = 0,
+    frame = 0, prevTime = 0,
+    isStay = true, delay = 0,
+    needFrameUpdate = true, needColorUpdate = true;
 
 window.onload = init;
 
@@ -14,7 +17,13 @@ function init() {
   dir = rand() * DirectionCount | 0;
 
   setInterval(updateFrame, 1000 / AnimationFPS);
+  updateStay();
   requestAnimationFrame(update);
+}
+
+function updateStay() {
+  isStay = !isStay;
+  setTimeout(updateStay, MinDelay + rand() * (MaxDelay - MinDelay));
 }
 
 function updateFrame() {
@@ -51,8 +60,10 @@ function update(time) {
     needColorUpdate = true;
   }
 
-  x = newX;
-  y = newY;
+  if (!isStay) {
+    x = newX;
+    y = newY;
+  }
 
   render();
 }
@@ -66,7 +77,9 @@ function render() {
   }
 
   if (needFrameUpdate) {
-    horse.style.backgroundPosition = `${-frame}em ${-dir}em`;
+    const dx = isStay ? 0 : frame;
+    const dy = isStay ? dir | 1 : dir;
+    horse.style.backgroundPosition = `${-dx}em ${-dy}em`;
     needFrameUpdate = false;
   }
 }
