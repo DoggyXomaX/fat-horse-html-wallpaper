@@ -1,8 +1,20 @@
-const Size = 300, Speed = 300, MaxOffset = 10, MinDelay = 1000, MaxDelay = 10000, FrameCount = 6, DirectionCount = 4, AnimationFPS = 32;
-let x = 0, y = 0, dir = 0,
-    frame = 0, prevTime = 0,
-    isStay = true, delay = 0,
-    needFrameUpdate = true, needColorUpdate = true;
+const Size = 300,
+      Speed = 300,
+      MaxOffset = 10,
+      MinDelay = 1000,
+      MaxDelay = 10000,
+      FrameCount = 6,
+      DirectionCount = 4,
+      AnimationFPS = 32;
+let x = 0,
+    y = 0,
+    dir = 0,
+    frame = 0,
+    prevTime = 0,
+    isStay = true,
+    delay = 0,
+    needFrameUpdate = true,
+    needColorUpdate = true;
 
 window.onload = init;
 
