@@ -1,98 +1,101 @@
-const Size = 300,
-      Speed = 300,
-      MaxOffset = 10,
-      MinDelay = 1000,
-      MaxDelay = 10000,
-      FrameCount = 6,
-      DirectionCount = 4,
-      AnimationFPS = 32;
-let x = 0,
-    y = 0,
-    dir = 0,
-    frame = 0,
-    prevTime = 0,
-    isStay = true,
-    delay = 0,
-    needFrameUpdate = true,
-    needColorUpdate = true;
+const MaxOffset = 10;
+const MinDelay = 5000;
+const MaxDelay = 15000;
+const FrameCount = 6;
+const DirectionCount = 4;
+const AnimationFPS = 8;
+
+class Horse {
+  speedAnimation = [0.25, 0.5, 1, 0.5, 1, 0.5];
+  size = 300;
+  speed = 150;
+  x = 0;
+  y = 0;
+  dir = 0;
+  frame = 0;
+  isStay = true;
+  element = document.createElement('div');
+  constructor() {
+    this.element.className = 'horse';
+  }
+  init() {
+    this.x = Math.random() * (document.body.clientWidth - this.size);
+    this.y = Math.random() * (document.body.clientHeight - this.size);
+    this.size = 150 + Math.random() * 300 | 0;
+    this.frame = Math.random() * FrameCount | 0;
+    this.dir = Math.random() * DirectionCount | 0;
+
+    this.element.style.fontSize = `${this.size}px`;
+    this.element.style.filter = `brightness(${50 + Math.random() * 50}%)`;
+    document.body.append(this.element);
+
+    this.updateStay();
+  }
+  updateStay = () => {
+    this.isStay = !this.isStay;
+    if (Math.random() > 0.75 && !this.isStay) this.dir = Math.random() * DirectionCount | 0;
+    this.draw();
+
+    setTimeout(this.updateStay, MinDelay + Math.random() * (MaxDelay - MinDelay));
+  }
+  updateFrame() {
+    this.frame = (this.frame + 1) % FrameCount;
+    if (!this.isStay) this.update(1 / AnimationFPS);
+  }
+  update(deltaTime) {
+    const speedScale = this.speedAnimation[this.frame];
+
+    let newX = this.x + (this.dir & 2 ? 1 : -1) * this.speed * speedScale * deltaTime;
+    let newY = this.y + (this.dir & 1 ? 1 : -1) * this.speed * speedScale * deltaTime;
+
+    if (newX < -MaxOffset) {
+      newX = -MaxOffset;
+      this.dir |= 2;
+    } else if (newX > document.body.clientWidth - this.size + MaxOffset) {
+      newX = document.body.clientWidth - this.size + MaxOffset;
+      this.dir &= 1;
+    }
+
+    if (newY < -MaxOffset) {
+      newY = -MaxOffset;
+      this.dir |= 1;
+    } else if (newY > document.body.clientHeight - this.size + MaxOffset) {
+      newY = document.body.clientHeight - this.size + MaxOffset;
+      this.dir &= 2;
+    }
+
+    if (!this.isStay) {
+      this.x = newX;
+      this.y = newY;
+    }
+
+    this.draw();
+  }
+  draw() {
+    this.element.style.transform = `matrix(1,0,0,1,${this.x},${this.y})`;
+
+    const dx = this.isStay ? 0 : this.frame;
+    const dy = this.isStay ? this.dir | 1 : this.dir;
+    this.element.style.setProperty('--dx', dx);
+    this.element.style.setProperty('--dy', dy);
+    this.element.style.zIndex = (this.y + this.size) | 0;
+  }
+}
+
+const horses = new Array(8);
+for (let i = 0, k = horses.length; i < k; i++) {
+  const horse = new Horse();
+  horses[i] = horse;
+}
 
 window.onload = init;
 
-function rand() {
-  return Math.random();
-}
-
 function init() {
-  horse.style.fontSize = `${Size}px`;
-  x = rand() * (document.body.clientWidth - Size);
-  y = rand() * (document.body.clientHeight - Size);
-  dir = rand() * DirectionCount | 0;
-
+  for (let i = 0, k = horses.length; i < k; i++) horses[i].init();
   updateFrame();
-  updateStay();
-  update();
-}
-
-function updateStay() {
-  isStay = !isStay;
-  setTimeout(updateStay, MinDelay + rand() * (MaxDelay - MinDelay));
 }
 
 function updateFrame() {
-  frame = (frame + 1) % FrameCount;
-  needFrameUpdate = true;
+  for (let i = 0, k = horses.length; i < k; i++) horses[i].updateFrame();
   setTimeout(updateFrame, 1000 / AnimationFPS);
-}
-
-function update(time = 0) {
-  requestAnimationFrame(update);
-
-  const deltaTime = (time - prevTime) / 1000;
-  prevTime = time;
-
-  let newX = x + (dir & 2 ? 1 : -1) * Speed * deltaTime;
-  let newY = y + (dir & 1 ? 1 : -1) * Speed * deltaTime;
-
-  if (newX < -MaxOffset) {
-    newX = -MaxOffset;
-    dir |= 2;
-    needColorUpdate = true;
-  } else if (newX > document.body.clientWidth - Size + MaxOffset) {
-    newX = document.body.clientWidth - Size + MaxOffset;
-    dir &= 1;
-    needColorUpdate = true;
-  }
-
-  if (newY < -MaxOffset) {
-    newY = -MaxOffset;
-    dir |= 1;
-    needColorUpdate = true;
-  } else if (newY > document.body.clientHeight - Size + MaxOffset) {
-    newY = document.body.clientHeight - Size + MaxOffset;
-    dir &= 2;
-    needColorUpdate = true;
-  }
-
-  if (!isStay) {
-    x = newX;
-    y = newY;
-  }
-
-  render();
-}
-
-function render() {
-  horse.style.transform = `matrix(1,0,0,1,${x},${y})`;
-
-  if (needColorUpdate) {
-    horse.style.filter = `hue-rotate(${rand()}turn)`;
-    needColorUpdate = false;
-  }
-
-  if (needFrameUpdate) {
-    const dx = isStay ? 0 : frame;
-    const dy = isStay ? dir | 1 : dir;
-    horse.style.backgroundPosition = `${-dx}em ${-dy}em`;
-    needFrameUpdate = false;
-  }
 }

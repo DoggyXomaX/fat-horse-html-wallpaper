@@ -1,11 +1,63 @@
-html, body { width: 100%; height: 100%; height: 100vh; height: 100dvh; box-sizing: border-box }
-body { background-color: black; overflow: hidden; }
-* { margin: 0; padding: 0 }
-#horse {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+}
+
+body {
+  background-color: black;
+  overflow: hidden;
+}
+
+.horse {
   display: block;
   width: 1em;
   height: 1em;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  --dx: 0;
+  --dy: 0;
+}
+
+.horse::before {
+  content: '';
+
+  display: block;
+  width: 100%;
+  height: 36px;
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  border-radius: 50% 50%;
+  filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.horse::after {
+  content: '';
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  position: relative;
+
   background-image: url(horses.webp);
   background-size: 6em 4em;
+  background-position: calc(var(--dx) * -1em) calc(var(--dy) * -1em);
   image-rendering: pixelated;
 }
+
+body { background-image: url(grass.webp); background-position: center; background-size: cover; image-rendering: pixelated }
