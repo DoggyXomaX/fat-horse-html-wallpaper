@@ -1,6 +1,6 @@
 const MaxOffset = 10;
-const MinDelay = 5000;
-const MaxDelay = 15000;
+const MinDelay = 2000;
+const MaxDelay = 20000;
 const FrameCount = 6;
 const DirectionCount = 4;
 const AnimationFPS = 8;
@@ -22,6 +22,7 @@ class Horse {
     this.x = Math.random() * (document.body.clientWidth - this.size);
     this.y = Math.random() * (document.body.clientHeight - this.size);
     this.size = 150 + Math.random() * 300 | 0;
+    this.speed = this.size / 2;
     this.frame = Math.random() * FrameCount | 0;
     this.dir = Math.random() * DirectionCount | 0;
 
